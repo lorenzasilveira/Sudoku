@@ -19,7 +19,7 @@ function gerarSudokuOnLoad() {
 
 async function SubirDados(file){
 	let text = await file.text();
-
+	
 	clearGrid();
 
 	text = text.split(/;|\n+/g);
@@ -40,9 +40,6 @@ function gerarSudoku() {
 	emptyMessages();
 	
 	// New "empty" grid
-	for (i = 0; i < 9; i++)
-		for (j = 0; j < 9; j++)
-			sudokuGrid[i][j] = 0;
 	clearGrid();
 	
 	// Put random candidates and check if they conflict one another
@@ -92,6 +89,7 @@ function clearGrid() {
 		for (j = 0; j < 9; j++) {
 			indexId = i + "" + j; 
 			document.getElementById(indexId).innerHTML = "";
+			sudokuGrid[i][j] = 0;
 		}
 	}
 }
