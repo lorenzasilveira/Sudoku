@@ -108,12 +108,9 @@
 			</tr>
 		</table>
 		<div class="buttonsContainer">
-			<td> <button class="button generateButton" onclick="gerarSudoku()">Gerar Sudoku</button> </td>
+			<td> <input class="button generateButton" type="file" onchange="SubirDados(this.files[0])" id="fileUploaded"/> </td>
 			<td> <button class="button solveButton" onclick="resolverSudoku()">Resolver</button> </td>
 			<td> <button class="button solveButtonWithImidiateDrawing" onclick="mostrarSolucaoAgora()" hidden>Mostrar a solução agora!</button> </td>
-			<input type="file" onchange="SubirDados(this.files[0])" id="fileUploaded"/>
-		</div>
-		<div id="messages">
 		</div>
 	</div>
 	</body>

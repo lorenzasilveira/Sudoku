@@ -1,6 +1,5 @@
 var sudokuGrid;
-var numberOfGivens = 20;
-var grid, printarElemento, mostraSolucao, takesTooLongToExecute;
+var grid, printarElemento, mostraSolucao;
 
 function gerarSudokuOnLoad() {
 	sudokuGrid = [	[5,3,0,0,7,0,0,0,0],
@@ -17,47 +16,23 @@ function gerarSudokuOnLoad() {
 }
 
 async function SubirDados(arquivo){
-	let text = await arquivo.text();
+	let texto = await arquivo.text();
 	
 	limparGrid();
 
-	text = text.split(/;|\n+/g);
+	texto = texto.split(/;|\n+/g);
 	let k = 0;
 	for (i = 0; i < 9; i++) {
 		for (j = 0; j < 9; j++) {
-			sudokuGrid[i][j] = text[k];
+			sudokuGrid[i][j] = texto[k];
 			k++;
 		}
 	}
 	printarGrid();
 }
 
-function gerarSudoku() {
-	var i, j, candidate, indexX, indexY, position;
-	
-	disableButtons();
-	emptyMessages();
-	
-	// New "empty" grid
-	limparGrid();
-	
-	// Put random candidates and check if they conflict one another
-	for (i = 0; i < numberOfGivens; i++) {
-		do {
-			candidate = Math.floor((Math.random() * 9) + 1); // 1 - 9
-			do {
-				indexX = Math.floor((Math.random() * 9) + 0); // 0 - 8
-				indexY = Math.floor((Math.random() * 9) + 0); 
-			} while (!sudokuGrid[indexX][indexY] == 0); // find an empty cell
-		} while (!createsNoConflicts(indexX,indexY,candidate));
-		sudokuGrid[indexX][indexY] = candidate;
-	}
-	
-	printarGrid();
-	enableButtons();
-}
-
 function printarGrid() {
+	habilitarBotoes();
 	var i, j, indexId;
 	for (i = 0; i < 9; i++) {
 		for (j = 0; j < 9; j++) {
@@ -72,7 +47,7 @@ function printarGrid() {
 	}
 }
 
-function drawFullGridSolution() {
+function printarGridSolucaoCompleta() {
 	var i, j, indexId;
 	for (i = 0; i < 9; i++) {
 		for (j = 0; j < 9; j++) {
@@ -93,94 +68,82 @@ function limparGrid() {
 	}
 }
 
-function createsNoConflicts(indexX,indexY,candidate) {
-	var row, column, subGridLeftUpperRow, subGridLeftUpperColumn;
+function naoTemConflito(indexX,indexY,candidato) {
+	var linha, coluna, subGridLinhaSuperiorEsquerda, subGridColunaSuperiorEsquerda;
 	
 	// check row conflict
-	for (column = 0; column < 9; column++) {
-		if (sudokuGrid[indexX][column] == candidate) return false;
+	for (coluna = 0; coluna < 9; coluna++) {
+		if (sudokuGrid[indexX][coluna] == candidato) return false;
 	}
 	
 	// check column conflict
-	for (row = 0; row < 9; row++) {
-		if (sudokuGrid[row][indexY] == candidate) return false;
+	for (linha = 0; linha < 9; linha++) {
+		if (sudokuGrid[linha][indexY] == candidato) return false;
 	}
 	
 	// check sub-grid (3x3) conflict
-	subGridLeftUpperRow = indexX - indexX % 3;
-	subGridLeftUpperColumn = indexY - indexY % 3;
-	 for (row = 0; row < 3; row++)
-        for (column = 0; column < 3; column++)
-			if (sudokuGrid[subGridLeftUpperRow + row][subGridLeftUpperColumn + column] == candidate) return false;
+	subGridLinhaSuperiorEsquerda = indexX - indexX % 3;
+	subGridColunaSuperiorEsquerda = indexY - indexY % 3;
+	 for (linha = 0; linha < 3; linha++)
+        for (coluna = 0; coluna < 3; coluna++)
+			if (sudokuGrid[subGridLinhaSuperiorEsquerda + linha][subGridColunaSuperiorEsquerda + coluna] == candidato) return false;
 	
 	return true;
 }
 
 async function resolverSudoku() {
-	disableButtons();
+	desabilitarBotoes();
 	await sleep(100);
 	
 	grid = [];
-	takesTooLongToExecute = 0;
 	
-	if (solveUsingBacktrack()) {
-		drawWithPauses();
-		showImidiateSolutionButton(1);
+	if (resolverComForcaBruta()) {
+		printarPausadamente();
+		mostrarBotaoResolverImediatamente(1);
 	}
 	else {
-		createNewGenerationMessage();
-		enableGenerateButton();
-		disableSolveButton();
+		habilitarBotaoUpload();
+		desabilitarBotaoResolver();
 	}
 }
 
 function mostrarSolucaoAgora() {
 	mostraSolucao = 1;
-	drawFullGridSolution();
-	showImidiateSolutionButton(0);
-	disableSolveButton();
+	printarGridSolucaoCompleta();
+	mostrarBotaoResolverImediatamente(0);
+	desabilitarBotaoResolver();
 }
 
-function solveUsingBacktrack() {
-	var positionOfEmptyGrid, positionOfCandidate, candidate, row, column;
+function resolverComForcaBruta() {
+	var posicaoDoEspacoVazio, posicaoDoCandidato, candidato, linha, coluna;
 	
-	positionOfEmptyGrid = findEmptyGrid();
-	if (positionOfEmptyGrid == "") return true;
+	posicaoDoEspacoVazio = buscarEspacoVazio();
+	if (posicaoDoEspacoVazio == "") return true;
 	
-	row = positionOfEmptyGrid.charAt(0);
-	column = positionOfEmptyGrid.charAt(1);
-	positionOfCandidate = positionOfEmptyGrid;
+	linha = posicaoDoEspacoVazio.charAt(0);
+	coluna = posicaoDoEspacoVazio.charAt(1);
+	posicaoDoCandidato = posicaoDoEspacoVazio;
 	
-	for (candidate = 1; candidate <= 9; candidate++) {
-		if (createsNoConflicts(row,column,candidate)) {
-			sudokuGrid[row][column] = candidate;
+	for (candidato = 1; candidato <= 9; candidato++) {
+		if (naoTemConflito(linha,coluna,candidato)) {
+			sudokuGrid[linha][coluna] = candidato;
 			
-			//drawCandidate(row, column);
-			printarElemento = [positionOfCandidate, candidate];
+			printarElemento = [posicaoDoCandidato, candidato];
 			grid.push(printarElemento);
 			
-			if (solveUsingBacktrack())
+			if (resolverComForcaBruta())
 				return true;
-			sudokuGrid[row][column] = 0;
+			sudokuGrid[linha][coluna] = 0;
 			
-			// stop execution if grid gets too large
-			// This means that it takes too much time to find 
-			// an actual solution using this backtrack algorithm
-			if (grid.length > 3000000) {
-				takesTooLongToExecute = 1;
-				return false;
-			}
-			
-			//removeCandidateFromGrid(positionOfCandidate);
-			printarElemento = [positionOfCandidate,"0"];
+			printarElemento = [posicaoDoCandidato,"0"];
 			grid.push(printarElemento);
 		}
 	}
 	return false;
 }
 
-async function drawWithPauses() {
-	var i, j, position, candidate, row, column;
+async function printarPausadamente() {
+	var i, j, posicao, candidato;
 	console.log(grid.length); // the bigger this is, the more time it will take to draw the solution
 	
 	mostraSolucao = 0;
@@ -188,21 +151,20 @@ async function drawWithPauses() {
 			if (mostraSolucao) 
 				break;
 			printarElemento = grid[i];
-			position = printarElemento[0];
-			candidate = printarElemento[1];
-			if (candidate == "0") 
-				document.getElementById(position).innerHTML = ""; // remove candidate from grid
+			posicao = printarElemento[0];
+			candidato = printarElemento[1];
+			if (candidato == "0") 
+				document.getElementById(candidato).innerHTML = ""; // remove candidate from grid
 			else
-				document.getElementById(position).innerHTML = candidate; // draw the candidate
+				document.getElementById(posicao).innerHTML = candidato; // draw the candidate
 			await sleep(800);
 	}
-	enableGenerateButton();
-	disableSolveButton();
-	showImidiateSolutionButton(0);
-	emptyMessages();
+	habilitarBotaoUpload();
+	desabilitarBotaoResolver();
+	mostrarBotaoResolverImediatamente(0);
 }
 
-function findEmptyGrid() {
+function buscarEspacoVazio() {
 	var i, j, position = "";
 	for (i = 0; i < 9; i++)
 		for (j = 0; j < 9; j++)
@@ -217,54 +179,33 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function createNewGenerationMessage() {
-	if (takesTooLongToExecute) {
-		console.log(grid.length);
-		document.getElementById("messages").innerHTML = "Using a backtracking algorithm takes too long to find a solution - if there is one!" +
-		" Try generating a new puzzle...";
-	} else document.getElementById("messages").innerHTML = "This puzzle does not have a solution - try generating a new one!";
-}
-
-function showImidiateSolutionButton(show) {
-	if (show) document.getElementsByClassName("solveButtonWithImidiateDrawing")[0].hidden = false;
+function mostrarBotaoResolverImediatamente(mostrar) {
+	if (mostrar) document.getElementsByClassName("solveButtonWithImidiateDrawing")[0].hidden = false;
 	else document.getElementsByClassName("solveButtonWithImidiateDrawing")[0].hidden = true;
 }
 
-function emptyMessages() {
-	document.getElementById("messages").innerHTML = "";
+function desabilitarBotoes() {
+	desabilitarBotaoResolver();
+	desabilitarBotaoUpload();
 }
 
-function disableButtons() {
-	disableGenerateButton();
-	disableSolveButton();
-}
-
-function disableGenerateButton() {
+function desabilitarBotaoUpload() {
 	document.getElementsByClassName("generateButton")[0].disabled = true;
 }
 
-function disableSolveButton() {
+function desabilitarBotaoResolver() {
 	document.getElementsByClassName("solveButton")[0].disabled = true;
 }
 
-function enableButtons() {
-	enableGenerateButton();
-	enableSolveButton();
+function habilitarBotoes() {
+	habilitarBotaoResolver();
+	habilitarBotaoUpload();
 }
 
-function enableGenerateButton() {
+function habilitarBotaoUpload() {
 	document.getElementsByClassName("generateButton")[0].disabled = false;
 }
 
-function enableSolveButton() {
+function habilitarBotaoResolver() {
 	document.getElementsByClassName("solveButton")[0].disabled = false;
-}
-
-function drawCandidate(row, column) {
-	var position = row + "" + column;
-	document.getElementById(position).innerHTML = sudokuGrid[row][column];
-}
-
-function removeCandidateFromGrid(position) {
-	document.getElementById(position).innerHTML = "";
 }
