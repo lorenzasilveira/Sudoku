@@ -1,5 +1,4 @@
-var sudokuGrid;
-var grid, printarElemento, mostraSolucao;
+let sudokuGrid, grid, printarElemento, mostraSolucao;
 
 function gerarSudokuOnLoad() {
 	sudokuGrid = [	[5,3,0,0,7,0,0,0,0],
@@ -33,7 +32,7 @@ async function SubirDados(arquivo){
 
 function printarGrid() {
 	habilitarBotoes();
-	var i, j, indexId;
+	let i, j, indexId;
 	for (i = 0; i < 9; i++) {
 		for (j = 0; j < 9; j++) {
 			indexId = i + "" + j; 
@@ -48,7 +47,7 @@ function printarGrid() {
 }
 
 function printarGridSolucaoCompleta() {
-	var i, j, indexId;
+	let i, j, indexId;
 	for (i = 0; i < 9; i++) {
 		for (j = 0; j < 9; j++) {
 			indexId = i + "" + j;
@@ -58,7 +57,7 @@ function printarGridSolucaoCompleta() {
 }
 
 function limparGrid() {
-	var i, j, indexId;
+	let i, j, indexId;
 	for (i = 0; i < 9; i++) {
 		for (j = 0; j < 9; j++) {
 			indexId = i + "" + j; 
@@ -69,7 +68,7 @@ function limparGrid() {
 }
 
 function naoTemConflito(indexX,indexY,candidato) {
-	var linha, coluna, subGridLinhaSuperiorEsquerda, subGridColunaSuperiorEsquerda;
+	let linha, coluna, inicioQuadranteLinha, inicioQuadranteColuna;
 	
 	// check row conflict
 	for (coluna = 0; coluna < 9; coluna++) {
@@ -82,11 +81,11 @@ function naoTemConflito(indexX,indexY,candidato) {
 	}
 	
 	// check sub-grid (3x3) conflict
-	subGridLinhaSuperiorEsquerda = indexX - indexX % 3;
-	subGridColunaSuperiorEsquerda = indexY - indexY % 3;
+	inicioQuadranteLinha = indexX - indexX % 3;
+	inicioQuadranteColuna = indexY - indexY % 3;
 	 for (linha = 0; linha < 3; linha++)
         for (coluna = 0; coluna < 3; coluna++)
-			if (sudokuGrid[subGridLinhaSuperiorEsquerda + linha][subGridColunaSuperiorEsquerda + coluna] == candidato) return false;
+			if (sudokuGrid[inicioQuadranteLinha + linha][inicioQuadranteColuna + coluna] == candidato) return false;
 	
 	return true;
 }
@@ -115,7 +114,7 @@ function mostrarSolucaoAgora() {
 }
 
 function resolverComForcaBruta() {
-	var posicaoDoEspacoVazio, posicaoDoCandidato, candidato, linha, coluna;
+	let posicaoDoEspacoVazio, posicaoDoCandidato, candidato, linha, coluna;
 	
 	posicaoDoEspacoVazio = buscarEspacoVazio();
 	if (posicaoDoEspacoVazio == "") return true;
@@ -143,7 +142,7 @@ function resolverComForcaBruta() {
 }
 
 async function printarPausadamente() {
-	var i, j, posicao, candidato;
+	let i, j, posicao, candidato;
 	console.log(grid.length); // the bigger this is, the more time it will take to draw the solution
 	
 	mostraSolucao = 0;
@@ -165,7 +164,7 @@ async function printarPausadamente() {
 }
 
 function buscarEspacoVazio() {
-	var i, j, position = "";
+	let i, j, position = "";
 	for (i = 0; i < 9; i++)
 		for (j = 0; j < 9; j++)
 			if (sudokuGrid[i][j] == 0) {
