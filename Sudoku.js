@@ -1,9 +1,8 @@
 var sudokuGrid;
 var numberOfGivens = 20;
-var drawGrid, drawElement, mostraSolucao, takesTooLongToExecute;
+var grid, printarElemento, mostraSolucao, takesTooLongToExecute;
 
 function gerarSudokuOnLoad() {
-	// initialize the sudoku Grid
 	sudokuGrid = [	[5,3,0,0,7,0,0,0,0],
 					[6,0,0,1,9,5,0,0,0],
 					[0,9,8,0,0,0,0,6,0],
@@ -14,13 +13,13 @@ function gerarSudokuOnLoad() {
 					[0,0,0,4,1,9,0,0,5],
 					[0,0,0,0,8,0,0,7,9]	];
 	
-	drawGridWithGivens();
+	printarGrid();
 }
 
-async function SubirDados(file){
-	let text = await file.text();
+async function SubirDados(arquivo){
+	let text = await arquivo.text();
 	
-	clearGrid();
+	limparGrid();
 
 	text = text.split(/;|\n+/g);
 	let k = 0;
@@ -30,7 +29,7 @@ async function SubirDados(file){
 			k++;
 		}
 	}
-	drawGridWithGivens();
+	printarGrid();
 }
 
 function gerarSudoku() {
@@ -40,7 +39,7 @@ function gerarSudoku() {
 	emptyMessages();
 	
 	// New "empty" grid
-	clearGrid();
+	limparGrid();
 	
 	// Put random candidates and check if they conflict one another
 	for (i = 0; i < numberOfGivens; i++) {
@@ -54,11 +53,11 @@ function gerarSudoku() {
 		sudokuGrid[indexX][indexY] = candidate;
 	}
 	
-	drawGridWithGivens();
+	printarGrid();
 	enableButtons();
 }
 
-function drawGridWithGivens() {
+function printarGrid() {
 	var i, j, indexId;
 	for (i = 0; i < 9; i++) {
 		for (j = 0; j < 9; j++) {
@@ -83,7 +82,7 @@ function drawFullGridSolution() {
 	}
 }
 
-function clearGrid() {
+function limparGrid() {
 	var i, j, indexId;
 	for (i = 0; i < 9; i++) {
 		for (j = 0; j < 9; j++) {
@@ -121,7 +120,7 @@ async function resolverSudoku() {
 	disableButtons();
 	await sleep(100);
 	
-	drawGrid = [];
+	grid = [];
 	takesTooLongToExecute = 0;
 	
 	if (solveUsingBacktrack()) {
@@ -157,24 +156,24 @@ function solveUsingBacktrack() {
 			sudokuGrid[row][column] = candidate;
 			
 			//drawCandidate(row, column);
-			drawElement = [positionOfCandidate, candidate];
-			drawGrid.push(drawElement);
+			printarElemento = [positionOfCandidate, candidate];
+			grid.push(printarElemento);
 			
 			if (solveUsingBacktrack())
 				return true;
 			sudokuGrid[row][column] = 0;
 			
-			// stop execution if drawGrid gets too large
+			// stop execution if grid gets too large
 			// This means that it takes too much time to find 
 			// an actual solution using this backtrack algorithm
-			if (drawGrid.length > 3000000) {
+			if (grid.length > 3000000) {
 				takesTooLongToExecute = 1;
 				return false;
 			}
 			
 			//removeCandidateFromGrid(positionOfCandidate);
-			drawElement = [positionOfCandidate,"0"];
-			drawGrid.push(drawElement);
+			printarElemento = [positionOfCandidate,"0"];
+			grid.push(printarElemento);
 		}
 	}
 	return false;
@@ -182,15 +181,15 @@ function solveUsingBacktrack() {
 
 async function drawWithPauses() {
 	var i, j, position, candidate, row, column;
-	console.log(drawGrid.length); // the bigger this is, the more time it will take to draw the solution
+	console.log(grid.length); // the bigger this is, the more time it will take to draw the solution
 	
 	mostraSolucao = 0;
-	for (i = 0; i < drawGrid.length; i++) {
+	for (i = 0; i < grid.length; i++) {
 			if (mostraSolucao) 
 				break;
-			drawElement = drawGrid[i];
-			position = drawElement[0];
-			candidate = drawElement[1];
+			printarElemento = grid[i];
+			position = printarElemento[0];
+			candidate = printarElemento[1];
 			if (candidate == "0") 
 				document.getElementById(position).innerHTML = ""; // remove candidate from grid
 			else
@@ -220,7 +219,7 @@ function sleep(ms) {
 
 function createNewGenerationMessage() {
 	if (takesTooLongToExecute) {
-		console.log(drawGrid.length);
+		console.log(grid.length);
 		document.getElementById("messages").innerHTML = "Using a backtracking algorithm takes too long to find a solution - if there is one!" +
 		" Try generating a new puzzle...";
 	} else document.getElementById("messages").innerHTML = "This puzzle does not have a solution - try generating a new one!";
