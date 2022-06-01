@@ -1,3 +1,9 @@
+.titulo {
+	font-size: 1.8rem;
+	font-family: 'Courier New', Courier, monospace;
+	text-align: center;
+}
+
 table {
 	border: 1px solid black;
 	border-collapse: collapse;
@@ -36,11 +42,6 @@ tr:nth-child(3n) {
 	margin: 5px auto;
 }
 
-.buttonsContainer {
-	margin-top: 5px;
-	width: 380px;
-	height: 60px;
-}
 
 #messages {
 	margin-top: 5px;
@@ -56,7 +57,7 @@ tr:nth-child(3n) {
 	color: blue;
 }
 
-.generateButton {
+/* .generateButton {
 	float: left;
 	width: 170px;
 	font-size: 17px;
@@ -84,4 +85,4 @@ tr:nth-child(3n) {
 	height: 52px;
 	line-height: 50px;
 	border-radius: 10px;
-}
+} */

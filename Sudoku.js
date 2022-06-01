@@ -14,7 +14,7 @@ function gerarSudokuOnLoad() {
 	printarGrid();
 }
 
-async function SubirDados(arquivo){
+async function subirDados(arquivo){
 	let texto = await arquivo.text();
 	
 	limparGrid();
@@ -91,6 +91,7 @@ function naoTemConflito(indexX,indexY,candidato) {
 }
 
 async function resolverSudoku() {
+	debugger;
 	desabilitarBotoes();
 	await sleep(100);
 	
@@ -153,7 +154,7 @@ async function printarPausadamente() {
 			posicao = printarElemento[0];
 			candidato = printarElemento[1];
 			if (candidato == "0") 
-				document.getElementById(candidato).innerHTML = ""; // remove candidate from grid
+				document.getElementById(posicao).innerHTML = ""; // remove candidate from grid
 			else
 				document.getElementById(posicao).innerHTML = candidato; // draw the candidate
 			await sleep(800);
@@ -179,8 +180,8 @@ function sleep(ms) {
 }
 
 function mostrarBotaoResolverImediatamente(mostrar) {
-	if (mostrar) document.getElementsByClassName("solveButtonWithImidiateDrawing")[0].hidden = false;
-	else document.getElementsByClassName("solveButtonWithImidiateDrawing")[0].hidden = true;
+	if (mostrar) document.getElementsByClassName("botaoResolverRapido")[0].disabled = false;
+	else document.getElementsByClassName("botaoResolverRapido")[0].disabled = true;
 }
 
 function desabilitarBotoes() {
@@ -188,12 +189,17 @@ function desabilitarBotoes() {
 	desabilitarBotaoUpload();
 }
 
+function limparInputFile() {
+	document.getElementById("uploadArquivo").value = "";
+}
+
 function desabilitarBotaoUpload() {
-	document.getElementsByClassName("generateButton")[0].disabled = true;
+	document.getElementsByClassName("botaoUpload")[0].disabled = true;
+	limparInputFile();
 }
 
 function desabilitarBotaoResolver() {
-	document.getElementsByClassName("solveButton")[0].disabled = true;
+	document.getElementsByClassName("botaoResolver")[0].disabled = true;
 }
 
 function habilitarBotoes() {
@@ -202,9 +208,9 @@ function habilitarBotoes() {
 }
 
 function habilitarBotaoUpload() {
-	document.getElementsByClassName("generateButton")[0].disabled = false;
+	document.getElementsByClassName("botaoUpload")[0].disabled = false;
 }
 
 function habilitarBotaoResolver() {
-	document.getElementsByClassName("solveButton")[0].disabled = false;
+	document.getElementsByClassName("botaoResolver")[0].disabled = false;
 }
