@@ -57,32 +57,6 @@ tr:nth-child(3n) {
 	color: blue;
 }
 
-/* .generateButton {
-	float: left;
-	width: 170px;
-	font-size: 17px;
-	cursor: pointer;
-	height: 52px;
-	line-height: 50px;
-	border-radius: 10px;
+.imagem {
+	width: 200px;
 }
-
-.solveButton {
-	float: right;
-	width: 170px;
-	font-size: 17px;
-	cursor: pointer;
-	height: 52px;
-	line-height: 50px;
-	border-radius: 10px;
-}
-
-.solveButtonWithImidiateDrawing {
-	margin-top: 5px;
-	width: 380px;
-	font-size: 17px;
-	cursor: pointer;
-	height: 52px;
-	line-height: 50px;
-	border-radius: 10px;
-} */

@@ -1,4 +1,4 @@
-let sudokuGrid, grid, printarElemento, mostraSolucao;
+let sudokuGrid, grid, printarElemento, mostraSolucao, contadorErros = 0;
 
 function gerarSudokuOnLoad() {
 	sudokuGrid = [	[5,3,0,0,7,0,0,0,0],
@@ -17,6 +17,7 @@ function gerarSudokuOnLoad() {
 async function subirDados(arquivo){
 	let texto = await arquivo.text();
 	
+	limparMensagem() 
 	limparGrid();
 
 	texto = texto.split(/;|\n+/g);
@@ -91,7 +92,6 @@ function naoTemConflito(indexX,indexY,candidato) {
 }
 
 async function resolverSudoku() {
-	debugger;
 	desabilitarBotoes();
 	await sleep(100);
 	
@@ -139,12 +139,12 @@ function resolverComForcaBruta() {
 			grid.push(printarElemento);
 		}
 	}
+	contadorErros++;
 	return false;
 }
 
 async function printarPausadamente() {
 	let i, j, posicao, candidato;
-	console.log(grid.length); // the bigger this is, the more time it will take to draw the solution
 	
 	mostraSolucao = 0;
 	for (i = 0; i < grid.length; i++) {
@@ -159,6 +159,7 @@ async function printarPausadamente() {
 				document.getElementById(posicao).innerHTML = candidato; // draw the candidate
 			await sleep(800);
 	}
+	printarMensagem();
 	habilitarBotaoUpload();
 	desabilitarBotaoResolver();
 	mostrarBotaoResolverImediatamente(0);
@@ -174,6 +175,15 @@ function buscarEspacoVazio() {
 			}
 	return position;
 }
+
+function printarMensagem() {
+	document.getElementById("mensagens").innerHTML = "Quantidade de erros: " + contadorErros;
+}
+
+function limparMensagem() {
+	document.getElementById("mensagens").innerHTML = "";
+}
+
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));

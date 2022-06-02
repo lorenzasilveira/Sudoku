@@ -17,6 +17,7 @@
 	<body onload="gerarSudokuOnLoad()">
 		<div class="container">
 			<table>
+				<img src="./imagem.png" class="imagem">
 				<h1 class="titulo">Sudoku - Força Bruta</h1>
 				<tr id="0">
 					<td id="00"></td>
@@ -124,11 +125,9 @@
 			</div>
 				<input class="form-control mt-3 botaoUpload" type="file" onchange="subirDados(this.files[0])" id="uploadArquivo">
 
-			<!-- <div class="buttonsContainer">
-				<input class="button girar" type="file" onchange="SubirDados(this.files[0])" id="fileUploaded"/>
-				<button class="button solveButton" onclick="resolverSudoku()">Resolver</button>
-				<button class="button solveButtonWithImidiateDrawing" onclick="mostrarSolucaoAgora()" hidden>Mostrar a solução agora!</button>
-			</div> -->
+			<div id="mensagens">
+				
+			</div>
 		</div>
 	</body>
 </html>
