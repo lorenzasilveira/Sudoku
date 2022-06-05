@@ -71,17 +71,14 @@ function limparGrid() {
 function naoTemConflito(indexX,indexY,candidato) {
 	let linha, coluna, inicioQuadranteLinha, inicioQuadranteColuna;
 	
-	// check row conflict
 	for (coluna = 0; coluna < 9; coluna++) {
 		if (sudokuGrid[indexX][coluna] == candidato) return false;
 	}
 	
-	// check column conflict
 	for (linha = 0; linha < 9; linha++) {
 		if (sudokuGrid[linha][indexY] == candidato) return false;
 	}
 	
-	// check sub-grid (3x3) conflict
 	inicioQuadranteLinha = indexX - indexX % 3;
 	inicioQuadranteColuna = indexY - indexY % 3;
 	 for (linha = 0; linha < 3; linha++)
@@ -154,9 +151,9 @@ async function printarPausadamente() {
 			posicao = printarElemento[0];
 			candidato = printarElemento[1];
 			if (candidato == "0") 
-				document.getElementById(posicao).innerHTML = ""; // remove candidate from grid
+				document.getElementById(posicao).innerHTML = "";
 			else
-				document.getElementById(posicao).innerHTML = candidato; // draw the candidate
+				document.getElementById(posicao).innerHTML = candidato;
 			await sleep(800);
 	}
 	printarMensagem();
@@ -181,6 +178,7 @@ function printarMensagem() {
 }
 
 function limparMensagem() {
+	contadorErros = 0;
 	document.getElementById("mensagens").innerHTML = "";
 }
 
