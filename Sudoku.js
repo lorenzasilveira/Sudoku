@@ -163,14 +163,14 @@ async function printarPausadamente() {
 }
 
 function buscarEspacoVazio() {
-	let i, j, position = "";
+	let i, j, posicao = "";
 	for (i = 0; i < 9; i++)
 		for (j = 0; j < 9; j++)
 			if (sudokuGrid[i][j] == 0) {
-				position = i + "" + j;
-				return position;
+				posicao = i + "" + j;
+				return posicao;
 			}
-	return position;
+	return posicao;
 }
 
 function printarMensagem() {
