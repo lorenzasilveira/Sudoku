@@ -59,4 +59,5 @@ tr:nth-child(3n) {
 
 .imagem {
 	width: 200px;
+	margin: auto;
 }
